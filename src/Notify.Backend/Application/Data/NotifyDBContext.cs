@@ -1,0 +1,20 @@
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Notify.Backend.Application.Models;
+
+namespace Notify.Backend.Application.Data
+{
+	public class NotifyDBContext : DbContext
+	{
+		public DbSet<Board> Boards { get; set; }
+		//public DbSet<Topic> Topics { get; set; }
+		//public DbSet<PubSuber> PubSubers { get; set; }
+
+		public NotifyDBContext(DbContextOptions<NotifyDBContext> options)
+		: base(options) { }
+
+	}
+}

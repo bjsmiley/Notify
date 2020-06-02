@@ -11,7 +11,7 @@ namespace Notify.Backend.Application.Hubs
 		
 		public override Task OnConnectedAsync()
 		{
-			this.Context.
+			//this.Context.
 			return base.OnConnectedAsync();
 		}
 

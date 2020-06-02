@@ -1,10 +1,12 @@
+version: '3'
+
 services:
         rabbit-mq:
                 image: rabbitmq:3-management
                 ports:
                         - 5672:5672
-                        - 15672-15672
-        mongodb:
+                        - 15672:15672
+        mongo-db:
                 image: mongo:latest
                 ports:
                         - 27017-27019:27017-27019

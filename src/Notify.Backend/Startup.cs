@@ -12,9 +12,16 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using Notify.Backend.Application.Data;
 using Notify.Backend.Application.Hubs;
 using Notify.Shared.Messaging.Rabbit;
 using RabbitMQ.Client;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Notify.Backend.Application.Services;
+using Notify.Backend.Application.Models;
 
 namespace Notify.Backend
 {
@@ -31,8 +38,10 @@ namespace Notify.Backend
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllers();
+			services.AddDbContext<NotifyDBContext>(options => options.UseInMemoryDatabase(databaseName: "NotifyDB"));
 			services.AddRabbitMQ(Configuration);
 			services.AddSignalR();
+			services.AddJwtAuthentication(Configuration);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +55,8 @@ namespace Notify.Backend
 			app.UseHttpsRedirection();
 
 			app.UseRouting();
+
+			app.UseAuthentication();
 
 			app.UseAuthorization();
 
@@ -80,6 +91,47 @@ namespace Notify.Backend
 					sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
 			//.AddSingleton<IUserRepository, UserRepository>();
+
+			return services;
+		}
+
+		public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+		{
+			var jwtSettings = configuration.GetSection("JwtSettings");
+			services.Configure<JwtSettings>(jwtSettings)
+				.AddSingleton(sp => sp.GetRequiredService<IOptions<JwtSettings>>().Value);
+
+			var secret = configuration.GetSection("JwtSettings:Secret").Value;
+
+			services.AddSingleton<IJwtService, JwtService>();
+
+			services.AddCors();
+
+			services.AddAuthentication(options =>
+			{
+				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			})
+			
+			.AddJwtBearer(options =>
+			{
+
+				options.RequireHttpsMetadata = false;
+				options.SaveToken = true;
+				options.TokenValidationParameters = new TokenValidationParameters
+				{
+					ValidateIssuerSigningKey = true,
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)),
+					ValidateIssuer = false,
+					ValidateAudience = false,
+					//ValidIssuer = configuration["JwtSettings:Issuer"],
+					//ValidAudience = configuration["JwtSettings:Audience"],
+				};
+			});
+
+			
+
+			
 
 			return services;
 		}
