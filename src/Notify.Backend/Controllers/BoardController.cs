@@ -11,6 +11,7 @@ using Notify.Backend.Application.Hubs;
 using Notify.Backend.Application.Data;
 using Notify.Backend.Application.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Notify.Backend.Controllers
 {
@@ -78,7 +79,15 @@ namespace Notify.Backend.Controllers
 		[Authorize]
 		public IActionResult Publish([FromRoute] string name, [FromBody] PublishMessageCommand command)
 		{
-			if (!command.Route.StartsWith(name)) return BadRequest();
+			var identity = this.User.Identity as ClaimsIdentity;
+			
+			if (identity == null) return BadRequest();
+
+			//var user = identity.FindFirst(ClaimTypes.Name);
+			var board = identity.FindFirst(ClaimTypes.GroupSid)?.Value;
+
+
+			if (board != name && !command.Route.StartsWith(name)) return BadRequest();
 
 			//_rabbitMQManager.Publish(command.Payload, name, ExchangeType.Topic, command.Route);
 
