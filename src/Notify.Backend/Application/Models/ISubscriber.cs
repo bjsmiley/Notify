@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace Notify.Backend.Application.Models
 {
-	public interface IConsumerManager
+	public interface ISubscriber
 	{
-		public void AddConsumer(string routeKey);
+		Task Subscribe(string boardName, string topic, string routeKey, string callback);
 	}
 }

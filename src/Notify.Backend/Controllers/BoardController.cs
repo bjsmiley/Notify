@@ -34,16 +34,6 @@ namespace Notify.Backend.Controllers
 		[HttpPost]
 		public IActionResult Create([FromBody] CreateBoardCommand command)
 		{
-			//_rabbitMQManager.Do(connection =>
-			//{
-			//	connection.ExchangeDeclare(command.Name, ExchangeType.Topic, true, false, null);
-			//});
-
-			// Simply validate that the command.Name does not already exist and return a jwt with important
-			// information:
-			// exchange name
-			// expire time?
-			// what about the user id?
 
 			if (_context.Boards.Any(b => b.Name == command.Board))
 				return BadRequest();
@@ -79,7 +69,8 @@ namespace Notify.Backend.Controllers
 		[Authorize]
 		public IActionResult Publish([FromRoute] string name, [FromBody] PublishMessageCommand command)
 		{
-			var identity = this.User.Identity as ClaimsIdentity;
+			
+			var identity = User.Identity as ClaimsIdentity;
 			
 			if (identity == null) return BadRequest();
 
@@ -89,7 +80,7 @@ namespace Notify.Backend.Controllers
 
 			if (board != name && !command.Route.StartsWith(name)) return BadRequest();
 
-			//_rabbitMQManager.Publish(command.Payload, name, ExchangeType.Topic, command.Route);
+			_rabbitMQManager.Publish(command.Payload, name, ExchangeType.Topic, command.Route);
 
 			return Ok(command.Payload);
 		}

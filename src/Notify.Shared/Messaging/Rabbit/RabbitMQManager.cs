@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Extensions.ObjectPool;
 using RabbitMQ.Client;
 using System.Text.Json;
+using RabbitMQ.Client.Events;
 
 namespace Notify.Shared.Messaging.Rabbit
 {
@@ -53,6 +54,30 @@ namespace Notify.Shared.Messaging.Rabbit
                 properties.Persistent = true;
 
                 channel.BasicPublish(exchangeName, routeKey, properties, sendBytes);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                _objectPool.Return(channel);
+            }
+        }
+
+        public void Subscribe(string exchangeName, string queueName, string routeKey, EventHandler<BasicDeliverEventArgs> eventHandler)
+        {
+            var channel = _objectPool.Get();
+
+
+            try
+            {
+                channel.QueueDeclare(queueName, true, false, true);
+                channel.QueueBind(queueName, exchangeName, routeKey);
+
+                var consumer = new EventingBasicConsumer(channel);
+
+                consumer.Received += eventHandler;
             }
             catch (Exception ex)
             {
