@@ -40,7 +40,7 @@ namespace Notify.Backend
 			services.AddControllers();
 			services.AddDbContext<NotifyDBContext>(options => options.UseInMemoryDatabase(databaseName: "NotifyDB"));
 			services.AddRabbitMQ(Configuration);
-			services.AddSignalR();
+			services.AddSignalR().AddJsonProtocol();
 			services.AddJwtAuthentication(Configuration);
 		}
 

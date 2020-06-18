@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Notify.Backend.Application.Models
+namespace Notify.Backend.Application.Commands
 {
-	public class Topic
+	public class SubscribeTopicCommand
 	{
-		public string Board { get; set; }
-		public string Name { get; set; }
+		public string Callback { get; set; }
 		public string Route { get; set; }
 	}
 }

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Notify.Backend.Application.Models
+namespace Notify.Backend.Application.Commands
 {
-	public class PubSuber
+	public class ConnectToBoardCommand
 	{
-		public string Name { get; set; }
 		public string Board { get; set; }
-		public List<string> Topics { get; set; }
-
+		public string Id { get; set; }
+		public string Key { get; set; }
 	}
 }

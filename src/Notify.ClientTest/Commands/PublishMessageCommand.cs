@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Notify.Backend.Application.Commands
 {
-	public class SubscribeTopicCommand
+	public class PublishMessageCommand
 	{
-		public string Callback { get; set; }
+		[Required]
 		public string Route { get; set; }
-		public string Topic { get; set; }
+		
+		[Required]
+		public object Payload { get; set; }
 	}
 }

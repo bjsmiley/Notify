@@ -88,5 +88,6 @@ namespace Notify.Shared.Messaging.Rabbit
                 _objectPool.Return(channel);
             }
         }
+
     }
 }

@@ -64,25 +64,25 @@ namespace Notify.Backend.Controllers
 			return Ok( new { token });
 		}
 
-		[Route("{name}/publish")]
-		[HttpPost]
-		[Authorize]
-		public IActionResult Publish([FromRoute] string name, [FromBody] PublishMessageCommand command)
-		{
+		//[Route("{name}/publish")]
+		//[HttpPost]
+		//[Authorize]
+		//public IActionResult Publish([FromRoute] string name, [FromBody] PublishMessageCommand command)
+		//{
 			
-			var identity = User.Identity as ClaimsIdentity;
+		//	var identity = User.Identity as ClaimsIdentity;
 			
-			if (identity == null) return BadRequest();
+		//	if (identity == null) return BadRequest();
 
-			//var user = identity.FindFirst(ClaimTypes.Name);
-			var board = identity.FindFirst(ClaimTypes.GroupSid)?.Value;
+		//	//var user = identity.FindFirst(ClaimTypes.Name);
+		//	var board = identity.FindFirst(ClaimTypes.GroupSid)?.Value;
 
 
-			if (board != name && !command.Route.StartsWith(name)) return BadRequest();
+		//	if (board != name && !command.Route.StartsWith(name)) return BadRequest();
 
-			_rabbitMQManager.Publish(command.Payload, name, ExchangeType.Topic, command.Route);
+		//	_rabbitMQManager.Publish(command.Payload, name, ExchangeType.Topic, command.Route);
 
-			return Ok(command.Payload);
-		}
+		//	return Ok(command.Payload);
+		//}
 	}
 }
