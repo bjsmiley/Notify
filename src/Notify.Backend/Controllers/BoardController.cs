@@ -61,7 +61,7 @@ namespace Notify.Backend.Controllers
 
 			var token = _jwtService.GenerateToken(command.Board, command.Name);
 
-			return Ok( new { token });
+			return Ok( new TokenModel { Token = token });
 		}
 
 		//[Route("{name}/publish")]

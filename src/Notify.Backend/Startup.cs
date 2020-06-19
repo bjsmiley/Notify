@@ -105,6 +105,13 @@ namespace Notify.Backend
 
 			services.AddSingleton<IJwtService, JwtService>();
 
+			//services.AddCors(options =>
+			//{
+			//	options.AddPolicy("FromNotifyWebsitePolicy", builder =>
+			//	 {
+			//		 builder.WithOrigins("http://localhost")
+			//	 });
+			//});
 			services.AddCors();
 
 			services.AddAuthentication(options =>
