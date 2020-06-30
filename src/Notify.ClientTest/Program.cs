@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR.Client;
 using Notify.Backend.Application.Commands;
 using Notify.Backend.Application.Models;
 
@@ -12,7 +13,7 @@ namespace Notify.ClientTest
 	{
 		static async Task Main(string[] args)
 		{
-			await Task.Delay(10000);
+			await Task.Delay(20000);
 
 			var client = new HttpClient();
 			client.BaseAddress = new Uri("https://localhost:5001/api/board/");
@@ -54,8 +55,50 @@ namespace Notify.ClientTest
 
 			client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
+			var connection = new HubConnectionBuilder()
+				.WithUrl("https://localhost:5001/hub", options =>
+				{
+					options.AccessTokenProvider = () => Task.FromResult(token);
+				}).Build();
 
+			await connection.StartAsync();
 
+			connection.On<object>("pushNotifications", (res) => 
+			{
+				var json = JsonSerializer.Serialize(res, new JsonSerializerOptions { WriteIndented = true });
+				Console.WriteLine(json);
+			});
+
+			var subcommand = new SubscribeTopicCommand
+			{ 
+				Topic = "pushNotifications",
+				Route = "myapp.push.user.1234"
+			};
+
+			await connection.InvokeAsync("subscribe", subcommand);
+			var rand = new Random();
+			while(true)
+			{
+				await Task.Delay(rand.Next(1000, 10000));
+				if (new Random().Next(1, 10) % 2 == 0)
+				{
+					var pubcmd = new PublishMessageCommand
+					{
+						Route = "myapp.push.user.1234",
+						Payload = new { Test = "test string", NestObj = subcommand }
+					};
+					await connection.InvokeAsync("publish", pubcmd);
+				}
+				else
+				{
+					var pubcmd = new PublishMessageCommand
+					{
+						Route = "myapp.push.user.1234",
+						Payload = "striiiing."
+					};
+					await connection.InvokeAsync("publish", pubcmd);
+				}
+			}
 
 
 

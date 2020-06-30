@@ -15,6 +15,8 @@ using Microsoft.Extensions.Options;
 using Notify.Backend.Application.Data;
 using Notify.Backend.Application.Hubs;
 using Notify.Shared.Messaging.Rabbit;
+using Notify.Shared.Messaging.Rabbit.Dtos;
+using Notify.Shared.Messaging.Rabbit.Bus;
 using RabbitMQ.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -79,6 +81,10 @@ namespace Notify.Backend
 			services.AddSingleton<IPooledObjectPolicy<IModel>, RabbitModelPooledObjectPolicy>();
 			services.AddSingleton<IRabbitMQManager, RabbitMQManager>();
 
+			services.AddSingleton<IRabbitBus<SubscribeDto>, RabbitBus<SubscribeDto>>();
+			services.AddHostedService<ConsumerWorker>();
+			
+
 			return services;
 		}
 
@@ -122,7 +128,7 @@ namespace Notify.Backend
 			
 			.AddJwtBearer(options =>
 			{
-
+				
 				options.RequireHttpsMetadata = false;
 				options.SaveToken = true;
 				options.TokenValidationParameters = new TokenValidationParameters
@@ -133,6 +139,21 @@ namespace Notify.Backend
 					ValidateAudience = false,
 					//ValidIssuer = configuration["JwtSettings:Issuer"],
 					//ValidAudience = configuration["JwtSettings:Audience"],
+				};
+				options.Events = new JwtBearerEvents
+				{
+					OnMessageReceived = context =>
+					{
+						var queryToken = context.Request.Query["access_token"];
+
+						var path = context.HttpContext.Request.Path;
+						if (!string.IsNullOrEmpty(queryToken) && path.StartsWithSegments("/hub"))
+						{
+							context.Token = queryToken;
+						}
+
+						return Task.CompletedTask;
+					}
 				};
 			});
 

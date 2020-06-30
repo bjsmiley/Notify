@@ -43,8 +43,6 @@ namespace Notify.Shared.Messaging.Rabbit
                 return;
 
             var channel = _objectPool.Get();
-            //channel.QueueDeclare("queueA", true, false, true);
-            //channel.QueueBind("queueA", "exhangeBlah", "route.key.#");
             try
             {
                 channel.ExchangeDeclare(exchangeName, exchangeType, true, false, null);
@@ -72,12 +70,15 @@ namespace Notify.Shared.Messaging.Rabbit
 
             try
             {
+                channel.ExchangeDeclare(exchangeName, ExchangeType.Topic, true, false, null);
+
                 channel.QueueDeclare(queueName, true, false, true);
                 channel.QueueBind(queueName, exchangeName, routeKey);
 
                 var consumer = new EventingBasicConsumer(channel);
 
                 consumer.Received += eventHandler;
+
             }
             catch (Exception ex)
             {
