@@ -10,48 +10,18 @@ namespace Notify.Shared.Messaging.Rabbit
 {
     public class RabbitModelPooledObjectPolicy : IPooledObjectPolicy<IModel>
     {
-        private readonly RabbitMQSettings _options;
+        private readonly IRabbitLifetimeConnection lifetimeConnection;
 
-        private readonly IConnection _connection;
-
-        public RabbitModelPooledObjectPolicy(IOptions<RabbitMQSettings> optionsAccs)
+        public RabbitModelPooledObjectPolicy(IRabbitLifetimeConnection lifetimeConnection)
         {
-            _options = optionsAccs.Value;
-            _connection = GetConnection();
+            this.lifetimeConnection = lifetimeConnection;
         }
 
-        private IConnection GetConnection()
-        {
-            var factory = new ConnectionFactory()
-            {
-                HostName = _options.Host,
-                UserName = _options.UserName,
-                Password = _options.Password,
-                Port = _options.Port
-            };
-
-            var attempts = 0;
-
-            while (true)
-            {
-                try
-                {
-                    return factory.CreateConnection();
-                }
-                catch (Exception e)
-                {
-                    if (attempts >= 5) throw e;
-
-                    attempts++;
-                    Task.Delay(1000).Wait();
-                }
-            }
-
-        }
+        
 
         public IModel Create()
         {
-            return _connection.CreateModel();
+            return lifetimeConnection.CreateModel();
         }
 
         public bool Return(IModel obj)

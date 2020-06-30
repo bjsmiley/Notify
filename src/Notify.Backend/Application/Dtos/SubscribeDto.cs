@@ -1,9 +1,9 @@
-﻿using RabbitMQ.Client.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Notify.Shared.Messaging.Rabbit.Dtos
+namespace Notify.Backend.Application.Dtos
 {
 	public class SubscribeDto
 	{
@@ -11,5 +11,5 @@ namespace Notify.Shared.Messaging.Rabbit.Dtos
 		public string QueueName { get; set; }
 		public string RouteKey { get; set; }
 		public string ConnectionId { get; set; }
-}
+	}
 }

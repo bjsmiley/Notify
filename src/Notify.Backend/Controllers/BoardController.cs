@@ -1,17 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Notify.Shared.Messaging.Rabbit;
 using Notify.Backend.Application.Commands;
-using RabbitMQ.Client;
-using Microsoft.AspNetCore.SignalR;
-using Notify.Backend.Application.Hubs;
 using Notify.Backend.Application.Data;
 using Notify.Backend.Application.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+
 
 namespace Notify.Backend.Controllers
 {
@@ -19,12 +12,10 @@ namespace Notify.Backend.Controllers
 	[Route("api/[controller]")]
 	public class BoardController : ControllerBase
 	{
-		private readonly IRabbitMQManager _rabbitMQManager;
 		private readonly NotifyDBContext _context;
 		private readonly IJwtService _jwtService;
-		public BoardController(IRabbitMQManager rabbitMQManager, NotifyDBContext context, IJwtService jwtservice)
+		public BoardController(NotifyDBContext context, IJwtService jwtservice)
 		{
-			_rabbitMQManager = rabbitMQManager;
 			_context = context;
 			_jwtService = jwtservice;
 			
@@ -64,25 +55,6 @@ namespace Notify.Backend.Controllers
 			return Ok( new TokenModel { Token = token });
 		}
 
-		//[Route("{name}/publish")]
-		//[HttpPost]
-		//[Authorize]
-		//public IActionResult Publish([FromRoute] string name, [FromBody] PublishMessageCommand command)
-		//{
-			
-		//	var identity = User.Identity as ClaimsIdentity;
-			
-		//	if (identity == null) return BadRequest();
-
-		//	//var user = identity.FindFirst(ClaimTypes.Name);
-		//	var board = identity.FindFirst(ClaimTypes.GroupSid)?.Value;
-
-
-		//	if (board != name && !command.Route.StartsWith(name)) return BadRequest();
-
-		//	_rabbitMQManager.Publish(command.Payload, name, ExchangeType.Topic, command.Route);
-
-		//	return Ok(command.Payload);
-		//}
+		
 	}
 }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace Notify.Shared.Messaging.Rabbit.Bus
+namespace Notify.Backend.Application.Bus
 {
-	public interface IRabbitBus<T>
+	public interface IBus<T>
 	{
 		ValueTask SendAsync(T message);
 		ValueTask<T> ReceiveAsync();

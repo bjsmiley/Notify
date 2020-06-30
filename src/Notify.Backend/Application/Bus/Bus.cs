@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
-namespace Notify.Shared.Messaging.Rabbit.Bus
+namespace Notify.Backend.Application.Bus
 {
-	public class RabbitBus<T> : IRabbitBus<T>
+	public class Bus<T> : IBus<T>
 	{
 		private readonly Channel<T> innerChannel;
-		public RabbitBus()
+		public Bus()
 		{
 			innerChannel = Channel.CreateUnbounded<T>(new UnboundedChannelOptions
 			{

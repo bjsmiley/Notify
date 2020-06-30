@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,14 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using Notify.Backend.Application.Data;
 using Notify.Backend.Application.Hubs;
 using Notify.Shared.Messaging.Rabbit;
-using Notify.Shared.Messaging.Rabbit.Dtos;
-using Notify.Shared.Messaging.Rabbit.Bus;
 using RabbitMQ.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,6 +18,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Notify.Backend.Application.Services;
 using Notify.Backend.Application.Models;
+using Notify.Backend.Application.Dtos;
+using Notify.Backend.Application.Bus;
 
 namespace Notify.Backend
 {
@@ -78,10 +74,11 @@ namespace Notify.Backend
 
 
 			services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+			services.AddSingleton<IRabbitLifetimeConnection, RabbitLifetimeConnection>();
 			services.AddSingleton<IPooledObjectPolicy<IModel>, RabbitModelPooledObjectPolicy>();
 			services.AddSingleton<IRabbitMQManager, RabbitMQManager>();
 
-			services.AddSingleton<IRabbitBus<SubscribeDto>, RabbitBus<SubscribeDto>>();
+			services.AddSingleton<IBus<SubscribeDto>, Bus<SubscribeDto>>();
 			services.AddHostedService<ConsumerWorker>();
 			
 
