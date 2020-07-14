@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
-using Notify.Backend.Application.Commands;
+using Notify.Shared.Commands;
+using Notify.Shared.Models;
 using Notify.Backend.Application.Data;
 using Notify.Backend.Application.Models;
 

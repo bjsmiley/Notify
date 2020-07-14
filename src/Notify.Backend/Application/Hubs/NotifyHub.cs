@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Notify.Backend.Application.Bus;
-using Notify.Backend.Application.Commands;
+using Notify.Shared.Commands;
 using Notify.Backend.Application.Dtos;
 using Notify.Shared.Messaging.Rabbit;
 using RabbitMQ.Client;

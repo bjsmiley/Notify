@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Notify.Backend.Application.Commands
+namespace Notify.Shared.Commands
 {
 	public class SubscribeTopicCommand
 	{

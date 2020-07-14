@@ -40,6 +40,7 @@ namespace Notify.Backend
 			services.AddRabbitMQ(Configuration);
 			services.AddSignalR().AddJsonProtocol();
 			services.AddJwtAuthentication(Configuration);
+			
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,8 +93,6 @@ namespace Notify.Backend
 
 			.AddSingleton<IDatabaseSettings>(sp =>
 					sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
-
-			//.AddSingleton<IUserRepository, UserRepository>();
 
 			return services;
 		}

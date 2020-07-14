@@ -4,8 +4,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
-using Notify.Backend.Application.Commands;
-using Notify.Backend.Application.Models;
+using Notify.Shared.Commands;
+using Notify.Shared.Models;
 
 namespace Notify.ClientTest
 {

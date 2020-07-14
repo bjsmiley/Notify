@@ -23,10 +23,11 @@ namespace Notify.Shared.Messaging.Rabbit
         {
             var factory = new ConnectionFactory()
             {
-                HostName = _options.Host,
-                UserName = _options.UserName,
-                Password = _options.Password,
-                Port = _options.Port
+                //HostName = _options.Host,
+                //UserName = _options.UserName,
+                //Password = _options.Password,
+                //Port = _options.Port
+                Uri = new Uri(_options.ConnectionString),
             };
 
             var attempts = 0;
